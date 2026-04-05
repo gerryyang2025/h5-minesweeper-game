@@ -78,6 +78,8 @@ h5-minesweeper-game/
 │       ├── ci.yml       # 推送/PR 时校验 game.js 语法
 │       └── pages.yml    # 推送 main/master 时部署 GitHub Pages
 ├── .nojekyll            # 关闭 Jekyll（Pages 用）
+├── audio/
+│   └── game_mario2.mp3  # 背景音乐（循环）
 ├── index.html           # 游戏主页
 ├── game.js              # 游戏逻辑
 ├── style.css            # 样式

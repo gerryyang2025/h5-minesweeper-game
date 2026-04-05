@@ -117,6 +117,20 @@ body {
   justify-content: flex-end;
 }
 
+.leaderboard-link:is(button) {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.leaderboard-link:focus-visible {
+  outline: 1px dotted var(--text);
+  outline-offset: 2px;
+}
+
 .leaderboard-link {
   display: inline-flex;
   align-items: center;
@@ -139,6 +153,10 @@ body {
 
 .leaderboard-link:active {
   border-color: var(--bevel-in);
+}
+
+.leaderboard-link--music-on {
+  color: var(--link);
 }
 
 .leaderboard-link__icon {

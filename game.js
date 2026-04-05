@@ -58,9 +58,69 @@
   const timerEl = document.getElementById("timer");
   const faceBtn = document.getElementById("face-btn");
   const difficultySelect = document.getElementById("difficulty");
+  const musicBtn = document.getElementById("musicBtn");
   const modeButtons = document.querySelectorAll("[data-mode]");
 
+  const BG_MUSIC_SRC = "audio/game_mario2.mp3";
+  let bgMusicAudio = null;
+  let isMusicPlaying = true;
+
   const NS = "http://www.w3.org/2000/svg";
+
+  function ensureBgMusic() {
+    if (bgMusicAudio) return;
+    bgMusicAudio = new Audio(BG_MUSIC_SRC);
+    bgMusicAudio.loop = true;
+    bgMusicAudio.volume = 0.3;
+    bgMusicAudio.preload = "auto";
+  }
+
+  function syncMusicButton() {
+    if (!musicBtn) return;
+    musicBtn.classList.toggle("leaderboard-link--music-on", isMusicPlaying);
+    musicBtn.setAttribute("aria-pressed", isMusicPlaying ? "true" : "false");
+  }
+
+  function pauseBackgroundMusic() {
+    if (bgMusicAudio) bgMusicAudio.pause();
+  }
+
+  function toggleMusic() {
+    ensureBgMusic();
+    isMusicPlaying = !isMusicPlaying;
+    if (isMusicPlaying) {
+      bgMusicAudio.play().catch(() => {});
+    } else {
+      bgMusicAudio.pause();
+    }
+    syncMusicButton();
+  }
+
+  function tryPlayMusicIfOn() {
+    ensureBgMusic();
+    if (isMusicPlaying) {
+      return bgMusicAudio.play().catch(() => {});
+    }
+    return Promise.resolve();
+  }
+
+  function onFirstPointerOutsideMusic(e) {
+    if (e.target.closest("#musicBtn")) return;
+    tryPlayMusicIfOn();
+    document.removeEventListener("pointerdown", onFirstPointerOutsideMusic, true);
+  }
+
+  window.addEventListener("load", () => {
+    tryPlayMusicIfOn();
+  });
+
+  document.addEventListener("pointerdown", onFirstPointerOutsideMusic, true);
+
+  if (musicBtn) {
+    musicBtn.addEventListener("click", () => {
+      toggleMusic();
+    });
+  }
 
   function useModeBar() {
     return window.matchMedia("(max-width: 899px), (hover: none), (pointer: coarse)").matches;
@@ -250,6 +310,7 @@
   }
 
   function gameOver(won, hitR, hitC) {
+    pauseBackgroundMusic();
     stopTimer();
     gameStatus = won ? "won" : "lost";
     setFace(won ? "win" : "dead");
@@ -370,6 +431,9 @@
     buildBoardDom();
     updateHud();
     requestAnimationFrame(() => computeCellSize());
+    if (isMusicPlaying && bgMusicAudio) {
+      bgMusicAudio.play().catch(() => {});
+    }
   }
 
   function buildBoardDom() {

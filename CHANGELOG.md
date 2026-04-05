@@ -7,6 +7,7 @@
 ### 新增
 
 - GitHub Pages：`.nojekyll` + `pages.yml` 工作流，支持 Actions 一键部署
+- 背景音乐：`audio/game_mario2.mp3` 循环播放，工具栏 **音乐** 开关；局终暂停，重开恢复
 
 ## [1.0.0] - 2026-04-05
 
