@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#c0c0c0" />
+    <title>扫雷 · 排行榜</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="lb-page">
+      <header class="lb-page__header">
+        <h1 class="lb-page__title">排行榜</h1>
+        <p class="lb-page__sub">本地保存 · 各难度最快用时 Top 10（胜利局）</p>
+        <a class="lb-back" href="index.html">返回游戏</a>
+      </header>
+
+      <div class="lb-stats">
+        <div class="lb-stats__item">
+          <div class="lb-stats__label">总胜利次数</div>
+          <div class="lb-stats__value" id="lb-stat-total">0</div>
+        </div>
+        <div class="lb-stats__item">
+          <div class="lb-stats__label">初级最佳</div>
+          <div class="lb-stats__value" id="lb-stat-best-beginner">—</div>
+        </div>
+        <div class="lb-stats__item">
+          <div class="lb-stats__label">中级最佳</div>
+          <div class="lb-stats__value" id="lb-stat-best-intermediate">—</div>
+        </div>
+        <div class="lb-stats__item">
+          <div class="lb-stats__label">高级最佳</div>
+          <div class="lb-stats__value" id="lb-stat-best-expert">—</div>
+        </div>
+      </div>
+
+      <section class="lb-section" aria-labelledby="lb-h-beginner">
+        <h2 class="lb-section__title" id="lb-h-beginner">初级 · 9×9 · 10 雷</h2>
+        <div class="lb-table-wrap">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th scope="col">排名</th>
+                <th scope="col">用时</th>
+                <th scope="col">日期</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody-beginner"></tbody>
+          </table>
+        </div>
+        <p class="lb-empty" id="lb-empty-beginner" hidden>该难度暂无记录</p>
+      </section>
+
+      <section class="lb-section" aria-labelledby="lb-h-intermediate">
+        <h2 class="lb-section__title" id="lb-h-intermediate">中级 · 16×16 · 40 雷</h2>
+        <div class="lb-table-wrap">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th scope="col">排名</th>
+                <th scope="col">用时</th>
+                <th scope="col">日期</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody-intermediate"></tbody>
+          </table>
+        </div>
+        <p class="lb-empty" id="lb-empty-intermediate" hidden>该难度暂无记录</p>
+      </section>
+
+      <section class="lb-section" aria-labelledby="lb-h-expert">
+        <h2 class="lb-section__title" id="lb-h-expert">高级 · 16×30 · 99 雷</h2>
+        <div class="lb-table-wrap">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th scope="col">排名</th>
+                <th scope="col">用时</th>
+                <th scope="col">日期</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody-expert"></tbody>
+          </table>
+        </div>
+        <p class="lb-empty" id="lb-empty-expert" hidden>该难度暂无记录</p>
+      </section>
+
+      <button type="button" class="lb-clear" id="lb-clear">清空排行榜</button>
+
+      <div class="lb-footer-actions">
+        <a class="lb-back" href="index.html">开始游戏</a>
+      </div>
+
+      <footer class="app-footer">
+        <p class="author-info">Gerry | v1.0</p>
+      </footer>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+
+        const LEADERBOARD_KEY = "minesweeper_leaderboard";
+        const LEVELS = [
+          { key: "beginner", tbody: "lb-tbody-beginner", empty: "lb-empty-beginner" },
+          { key: "intermediate", tbody: "lb-tbody-intermediate", empty: "lb-empty-intermediate" },
+          { key: "expert", tbody: "lb-tbody-expert", empty: "lb-empty-expert" },
+        ];
+
+        function getData() {
+          try {
+            const raw = localStorage.getItem(LEADERBOARD_KEY);
+            if (!raw) return { beginner: [], intermediate: [], expert: [] };
+            const d = JSON.parse(raw);
+            return {
+              beginner: Array.isArray(d.beginner) ? d.beginner : [],
+              intermediate: Array.isArray(d.intermediate) ? d.intermediate : [],
+              expert: Array.isArray(d.expert) ? d.expert : [],
+            };
+          } catch {
+            return { beginner: [], intermediate: [], expert: [] };
+          }
+        }
+
+        function formatTime(sec) {
+          const s = Math.max(0, sec | 0);
+          const m = Math.floor(s / 60);
+          const r = s % 60;
+          return m + ":" + String(r).padStart(2, "0");
+        }
+
+        function formatDate(iso) {
+          try {
+            const d = new Date(iso);
+            if (Number.isNaN(d.getTime())) return "—";
+            return d.toLocaleString("zh-CN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+          } catch {
+            return "—";
+          }
+        }
+
+        function rankClass(index) {
+          if (index === 0) return "lb-rank lb-rank--1";
+          if (index === 1) return "lb-rank lb-rank--2";
+          if (index === 2) return "lb-rank lb-rank--3";
+          return "lb-rank lb-rank--n";
+        }
+
+        function render() {
+          const data = getData();
+          let total = 0;
+          const best = { beginner: null, intermediate: null, expert: null };
+
+          LEVELS.forEach(({ key, tbody, empty }) => {
+            const list = data[key];
+            total += list.length;
+            if (list.length > 0) {
+              best[key] = list[0].time;
+            }
+
+            const tb = document.getElementById(tbody);
+            const emptyEl = document.getElementById(empty);
+            if (!list.length) {
+              tb.innerHTML = "";
+              emptyEl.hidden = false;
+              return;
+            }
+            emptyEl.hidden = true;
+            tb.innerHTML = list
+              .map((entry, index) => {
+                return (
+                  "<tr>" +
+                  '<td><span class="' +
+                  rankClass(index) +
+                  '">' +
+                  (index + 1) +
+                  "</span></td>" +
+                  '<td><span class="lb-time">' +
+                  formatTime(entry.time) +
+                  "</span></td>" +
+                  '<td><span class="lb-date">' +
+                  formatDate(entry.date) +
+                  "</span></td>" +
+                  "</tr>"
+                );
+              })
+              .join("");
+          });
+
+          document.getElementById("lb-stat-total").textContent = String(total);
+          document.getElementById("lb-stat-best-beginner").textContent =
+            best.beginner != null ? formatTime(best.beginner) : "—";
+          document.getElementById("lb-stat-best-intermediate").textContent =
+            best.intermediate != null ? formatTime(best.intermediate) : "—";
+          document.getElementById("lb-stat-best-expert").textContent = best.expert != null ? formatTime(best.expert) : "—";
+        }
+
+        document.getElementById("lb-clear").addEventListener("click", function () {
+          if (confirm("确定要清空全部难度的排行榜吗？此操作不可恢复。")) {
+            localStorage.removeItem(LEADERBOARD_KEY);
+            render();
+          }
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

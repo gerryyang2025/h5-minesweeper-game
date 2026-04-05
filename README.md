@@ -1,0 +1,111 @@
+# H5 扫雷 (Minesweeper)
+
+经典扫雷的 HTML5 实现：纯静态页面、无构建步骤，支持桌面鼠标与手机触屏，含本地排行榜与玩法说明。
+
+| 项目     | 说明        |
+| -------- | ----------- |
+| 当前版本 | v1.0.0      |
+| 类型     | 益智 / H5   |
+| 许可     | [MIT](LICENSE) |
+
+<!-- 可选：在推送 CI 后，将下方 OWNER/REPO 换成你的 GitHub 仓库以显示构建状态 -->
+<!-- [![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions) -->
+
+## 功能概览
+
+- **难度**：初级 9×9 / 10 雷，中级 16×16 / 40 雷，高级 16×30 / 99 雷  
+- **首点安全**：第一次点击后再布雷，且排除该格及周围 8 格  
+- **计时与雷数**：首次翻开后计时；剩余雷数 = 总雷数 − 旗数  
+- **标记**：右键或触屏模式循环「无 → 旗 → 问号」；翻开模式下长按未翻格可快速标记  
+- **Chord（快捷展开）**：中键或左+右同时按在数字格上；触屏使用「展开」模式点数字格  
+- **经典灰阶 UI**：浅色凸起格、标准数字配色  
+- **排行榜**：`localStorage` 按难度分别保存最快用时 Top 10（仅胜利局）  
+- **响应式**：根据视口自动调整格子大小  
+
+## 快速开始
+
+**方式一：直接打开**
+
+用浏览器打开仓库根目录下的 `index.html` 即可。
+
+**方式二：本地静态服务（推荐，避免部分浏览器对 `file://` 的限制）**
+
+```bash
+npm start
+```
+
+（无需安装依赖：`serve` 由 `npx` 按需拉取。）
+
+浏览器访问：<http://localhost:8080>。
+
+若未安装依赖，也可使用：
+
+```bash
+npx --yes serve -l 8080 .
+```
+
+## 部署到 GitHub Pages
+
+1. 在仓库 **Settings → Pages** 中，将 **Source** 设为 **Deploy from a branch**。  
+2. **Branch** 选择 `main`（或 `master`），文件夹选 **`/ (root)`**，保存。  
+3. 数分钟后可通过 `https://<你的用户名>.github.io/<仓库名>/` 访问（具体 URL 以 Pages 提示为准）。
+
+本仓库为纯静态文件，无需构建命令。
+
+## 仓库结构
+
+```
+h5-minesweeper-game/
+├── .github/
+│   └── workflows/
+│       └── ci.yml       # 推送/PR 时校验 game.js 语法
+├── index.html           # 游戏主页
+├── game.js              # 游戏逻辑
+├── style.css            # 样式
+├── help.html            # 玩法说明
+├── leaderboard.html     # 排行榜
+├── package.json         # 脚本与元数据（无 npm 依赖）
+├── LICENSE              # MIT
+├── README.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── CHANGELOG.md
+└── .gitignore
+```
+
+## 技术栈
+
+| 技术 | 用途 |
+| ---- | ---- |
+| HTML5 | 结构 |
+| CSS3 | 经典扫雷风格、响应式布局 |
+| 原生 JavaScript | 游戏逻辑与 DOM，无框架 |
+| localStorage | 排行榜持久化 |
+
+## 本地校验
+
+```bash
+npm run lint:js
+```
+
+等价于 `node --check game.js`，与 CI 一致。
+
+## 浏览器支持
+
+现代浏览器（支持 ES5+、Pointer Events、`localStorage`）。建议在 **Chrome / Firefox / Safari / Edge** 最新版本使用。
+
+## 贡献
+
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 安全
+
+若发现安全问题，请按 [SECURITY.md](SECURITY.md) 说明反馈。
+
+## 更新日志
+
+见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 许可证
+
+[MIT License](LICENSE)

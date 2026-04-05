@@ -1,0 +1,14 @@
+{
+  "name": "h5-minesweeper-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Classic Minesweeper — HTML5 / vanilla JS, mobile & desktop",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "lint:js": "node --check game.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
