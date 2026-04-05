@@ -22,3 +22,6 @@ yarn-error.log*
 # Local / secrets
 .env
 .env.*
+
+# Local preview of GitHub Pages bundle
+_site/

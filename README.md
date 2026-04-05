@@ -46,11 +46,28 @@ npx --yes serve -l 8080 .
 
 ## 部署到 GitHub Pages
 
-1. 在仓库 **Settings → Pages** 中，将 **Source** 设为 **Deploy from a branch**。  
-2. **Branch** 选择 `main`（或 `master`），文件夹选 **`/ (root)`**，保存。  
-3. 数分钟后可通过 `https://<你的用户名>.github.io/<仓库名>/` 访问（具体 URL 以 Pages 提示为准）。
+本仓库已包含 **GitHub Actions** 工作流 [`.github/workflows/pages.yml`](.github/workflows/pages.yml)，推送至 `main` / `master` 后自动发布；根目录的 **`.nojekyll`** 用于关闭 Jekyll，避免纯静态资源被错误处理。
 
-本仓库为纯静态文件，无需构建命令。
+### 推荐：用 GitHub Actions 发布
+
+1. 打开仓库 **Settings → Pages**。  
+2. **Build and deployment** 里，**Source** 选择 **GitHub Actions**（不要选 “Deploy from a branch”，否则会与下面工作流重复或冲突）。  
+3. 将代码推送到 `main`（或 `master`）。在 **Actions** 中应出现 **Deploy Pages** 并成功；首次需在 **Settings → Pages** 里确认环境 `github-pages`（按提示批准一次即可）。  
+4. 部署完成后，**Settings → Pages** 顶部会显示站点地址，一般为：
+
+   `https://<你的用户名>.github.io/<仓库名>/`
+
+游戏内链接均为**相对路径**（`style.css`、`help.html` 等），在子路径下可正常加载。
+
+### 备选：从分支发布（不使用 Actions）
+
+若你更希望不用 Actions：
+
+1. **Settings → Pages** 里 **Source** 选 **Deploy from a branch**。  
+2. Branch 选 `main`，目录 **`/ (root)`**，保存。  
+3. 保留仓库根目录的 **`.nojekyll`**，避免 Jekyll 干扰。
+
+> 若已启用 Actions 部署，请勿再同时用 “branch + root” 双源发布，任选其一即可。
 
 ## 仓库结构
 
@@ -58,7 +75,9 @@ npx --yes serve -l 8080 .
 h5-minesweeper-game/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml       # 推送/PR 时校验 game.js 语法
+│       ├── ci.yml       # 推送/PR 时校验 game.js 语法
+│       └── pages.yml    # 推送 main/master 时部署 GitHub Pages
+├── .nojekyll            # 关闭 Jekyll（Pages 用）
 ├── index.html           # 游戏主页
 ├── game.js              # 游戏逻辑
 ├── style.css            # 样式

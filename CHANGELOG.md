@@ -2,6 +2,12 @@
 
 本文档遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 风格，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 新增
+
+- GitHub Pages：`.nojekyll` + `pages.yml` 工作流，支持 Actions 一键部署
+
 ## [1.0.0] - 2026-04-05
 
 ### 新增
