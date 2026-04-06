@@ -2,16 +2,17 @@
   "use strict";
 
   const DIFFICULTY = {
+    novice: { rows: 5, cols: 5, mines: 3 },
     beginner: { rows: 9, cols: 9, mines: 10 },
     intermediate: { rows: 16, cols: 16, mines: 40 },
     expert: { rows: 16, cols: 30, mines: 99 },
   };
 
   const LEADERBOARD_KEY = "minesweeper_leaderboard";
-  const LEADERBOARD_LEVELS = ["beginner", "intermediate", "expert"];
+  const LEADERBOARD_LEVELS = ["novice", "beginner", "intermediate", "expert"];
 
   function emptyLeaderboardData() {
-    return { beginner: [], intermediate: [], expert: [] };
+    return { novice: [], beginner: [], intermediate: [], expert: [] };
   }
 
   function getLeaderboardData() {
@@ -41,7 +42,7 @@
     localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(data));
   }
 
-  let config = { ...DIFFICULTY.beginner };
+  let config = { ...DIFFICULTY.novice };
   let cells = [];
   let minesPlaced = false;
   let gameStatus = "idle";
