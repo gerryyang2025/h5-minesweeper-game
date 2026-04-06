@@ -5,15 +5,16 @@
     novice: { rows: 5, cols: 5, mines: 3 },
     junior: { rows: 7, cols: 7, mines: 5 },
     beginner: { rows: 9, cols: 9, mines: 10 },
+    standard: { rows: 12, cols: 12, mines: 22 },
     intermediate: { rows: 16, cols: 16, mines: 40 },
     expert: { rows: 16, cols: 30, mines: 99 },
   };
 
   const LEADERBOARD_KEY = "minesweeper_leaderboard";
-  const LEADERBOARD_LEVELS = ["novice", "junior", "beginner", "intermediate", "expert"];
+  const LEADERBOARD_LEVELS = ["novice", "junior", "beginner", "standard", "intermediate", "expert"];
 
   function emptyLeaderboardData() {
-    return { novice: [], junior: [], beginner: [], intermediate: [], expert: [] };
+    return { novice: [], junior: [], beginner: [], standard: [], intermediate: [], expert: [] };
   }
 
   function getLeaderboardData() {

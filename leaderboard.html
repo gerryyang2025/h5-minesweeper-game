@@ -33,6 +33,10 @@
           <div class="lb-stats__value" id="lb-stat-best-beginner">—</div>
         </div>
         <div class="lb-stats__item">
+          <div class="lb-stats__label">标准最佳</div>
+          <div class="lb-stats__value" id="lb-stat-best-standard">—</div>
+        </div>
+        <div class="lb-stats__item">
           <div class="lb-stats__label">中级最佳</div>
           <div class="lb-stats__value" id="lb-stat-best-intermediate">—</div>
         </div>
@@ -93,6 +97,23 @@
         <p class="lb-empty" id="lb-empty-beginner" hidden>该难度暂无记录</p>
       </section>
 
+      <section class="lb-section" aria-labelledby="lb-h-standard">
+        <h2 class="lb-section__title" id="lb-h-standard">标准 · 12×12 · 22 雷</h2>
+        <div class="lb-table-wrap">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th scope="col">排名</th>
+                <th scope="col">用时</th>
+                <th scope="col">日期</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody-standard"></tbody>
+          </table>
+        </div>
+        <p class="lb-empty" id="lb-empty-standard" hidden>该难度暂无记录</p>
+      </section>
+
       <section class="lb-section" aria-labelledby="lb-h-intermediate">
         <h2 class="lb-section__title" id="lb-h-intermediate">中级 · 16×16 · 40 雷</h2>
         <div class="lb-table-wrap">
@@ -146,6 +167,7 @@
           { key: "novice", tbody: "lb-tbody-novice", empty: "lb-empty-novice" },
           { key: "junior", tbody: "lb-tbody-junior", empty: "lb-empty-junior" },
           { key: "beginner", tbody: "lb-tbody-beginner", empty: "lb-empty-beginner" },
+          { key: "standard", tbody: "lb-tbody-standard", empty: "lb-empty-standard" },
           { key: "intermediate", tbody: "lb-tbody-intermediate", empty: "lb-empty-intermediate" },
           { key: "expert", tbody: "lb-tbody-expert", empty: "lb-empty-expert" },
         ];
@@ -153,17 +175,18 @@
         function getData() {
           try {
             const raw = localStorage.getItem(LEADERBOARD_KEY);
-            if (!raw) return { novice: [], junior: [], beginner: [], intermediate: [], expert: [] };
+            if (!raw) return { novice: [], junior: [], beginner: [], standard: [], intermediate: [], expert: [] };
             const d = JSON.parse(raw);
             return {
               novice: Array.isArray(d.novice) ? d.novice : [],
               junior: Array.isArray(d.junior) ? d.junior : [],
               beginner: Array.isArray(d.beginner) ? d.beginner : [],
+              standard: Array.isArray(d.standard) ? d.standard : [],
               intermediate: Array.isArray(d.intermediate) ? d.intermediate : [],
               expert: Array.isArray(d.expert) ? d.expert : [],
             };
           } catch {
-            return { novice: [], junior: [], beginner: [], intermediate: [], expert: [] };
+            return { novice: [], junior: [], beginner: [], standard: [], intermediate: [], expert: [] };
           }
         }
 
@@ -200,7 +223,7 @@
         function render() {
           const data = getData();
           let total = 0;
-          const best = { novice: null, junior: null, beginner: null, intermediate: null, expert: null };
+          const best = { novice: null, junior: null, beginner: null, standard: null, intermediate: null, expert: null };
 
           LEVELS.forEach(({ key, tbody, empty }) => {
             const list = data[key];
@@ -245,6 +268,8 @@
             best.junior != null ? formatTime(best.junior) : "—";
           document.getElementById("lb-stat-best-beginner").textContent =
             best.beginner != null ? formatTime(best.beginner) : "—";
+          document.getElementById("lb-stat-best-standard").textContent =
+            best.standard != null ? formatTime(best.standard) : "—";
           document.getElementById("lb-stat-best-intermediate").textContent =
             best.intermediate != null ? formatTime(best.intermediate) : "—";
           document.getElementById("lb-stat-best-expert").textContent = best.expert != null ? formatTime(best.expert) : "—";
